@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "io.github.racoondog.emoji.simplechatemojis.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "ChatInputSuggestorMixin",
+    "DrawContextMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

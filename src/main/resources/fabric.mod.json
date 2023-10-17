@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-chat-emojis",
+  "version": "${version}",
+  "name": "Simple Chat Emojis",
+  "description": "Simple configurable chat emojis mod",
+  "authors": [
+    "Crosby"
+  ],
+  "contact": {
+    "repo": "https://github.com/RacoonDog/simple-chat-emojis",
+    "sources": "https://github.com/RacoonDog/simple-chat-emojis",
+    "issues": "https://github.com/RacoonDog/simple-chat-emojis/issues",
+    "discord": "https://discord.gg/4RBmBCFSTc"
+  },
+  "license": "MIT",
+  "icon": "assets/simple-chat-emojis/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "io.github.racoondog.emoji.simplechatemojis.SimpleChatEmojis"
+    ]
+  },
+  "mixins": [
+    "simple-chat-emojis.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11",
+    "fabric-resource-loader-v0": "*",
+    "minecraft": ">=1.20.1"
+  }
+}
