@@ -10,6 +10,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -46,33 +47,32 @@ public abstract class DrawContextMixin {
     private int drawWithEmoji(TextRenderer renderer, String content, Style style, int x, int y, int color, boolean shadow) {
         Matcher matcher = SimpleChatEmojis.EMOJI_REGEX.matcher(content);
 
-        if (matcher.find()) {
-            do {
-                Emoji emoji = SimpleChatEmojis.REGISTRY.get(matcher.group());
+        while (matcher.find()) {
+            @Nullable Emoji emoji = SimpleChatEmojis.REGISTRY.get(matcher.group());
 
-                if (emoji == null) {
-                    if (matcher.end() == content.length())
-                        return drawShadowFix(renderer, Utils.toOrderedText(content, style), x, y, color, shadow);
-                    else {
-                        x = drawShadowFix(renderer, Utils.toOrderedText(content.substring(0, matcher.end()), style), x, y, color, shadow);
-                        content = content.substring(matcher.end());
-                        matcher.reset(content);
-                        continue;
-                    }
+            if (emoji == null) {
+                if (matcher.end() == content.length())
+                    return drawShadowFix(renderer, Utils.toOrderedText(content, style), x, y, color, shadow);
+                else {
+                    x = drawShadowFix(renderer, Utils.toOrderedText(content.substring(0, matcher.end()), style), x, y, color, shadow);
+                    content = content.substring(matcher.end());
+                    matcher.reset(content);
+                    continue;
                 }
+            }
 
-                if (matcher.start() > 0) {
-                    x = drawShadowFix(renderer, Utils.toOrderedText(content.substring(0, matcher.start()), style), x, y, color, shadow);
-                }
+            if (matcher.start() > 0) {
+                x = drawShadowFix(renderer, Utils.toOrderedText(content.substring(0, matcher.start()), style), x, y, color, shadow);
+            }
 
-                emoji.render((DrawContext) (Object) this, x, y, renderer.fontHeight);
-                x += renderer.fontHeight;
+            emoji.render((DrawContext) (Object) this, x, y, renderer.fontHeight, color);
+            x += renderer.fontHeight;
 
-                content = content.substring(matcher.end());
-                matcher.reset(content);
-            } while (matcher.find());
-            if (content.isEmpty()) return x;
+            content = content.substring(matcher.end());
+            matcher.reset(content);
         }
+
+        if (content.isEmpty()) return x;
         return drawShadowFix(renderer, Utils.toOrderedText(content, style), x, y, color, shadow);
     }
 
