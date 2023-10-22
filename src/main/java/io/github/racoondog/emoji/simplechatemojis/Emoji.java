@@ -1,7 +1,6 @@
 package io.github.racoondog.emoji.simplechatemojis;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.NativeImage;
@@ -44,13 +43,14 @@ public class Emoji {
         int height = texHeight / ratio;
         int width = texWidth / ratio;
 
-        drawTexture(context, id, x, y, width, height, 0, 0, texWidth, texHeight, texWidth, texHeight, color);
+        drawTexture(context, id, x, y - 1, width, height, 0, 0, texWidth, texHeight, texWidth, texHeight, color);
     }
 
     public void drawTexture(DrawContext context, Identifier texture, int x, int y, int width, int height, float u, float v, int regionWidth, int regionHeight, int textureWidth, int textureHeight, int color) {
         RenderSystem.enableBlend();
-        float alpha = ((color >> 24) & 0xFF) / 255f;
-        RenderSystem.setShaderColor(1, 1, 1, alpha);
+        int alpha = (color >> 24) & 0xFF;
+        if (alpha == 0) alpha = 0xFF; // Chat box has alpha set to 0
+        RenderSystem.setShaderColor(1, 1, 1, alpha / 255f);
 
         context.drawTexture(texture, x, y, width, height, u, v, regionWidth, regionHeight, textureWidth, textureHeight);
 
