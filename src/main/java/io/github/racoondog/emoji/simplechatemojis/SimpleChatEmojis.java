@@ -28,6 +28,7 @@ public class SimpleChatEmojis implements ClientModInitializer {
     public void onInitializeClient() {
         FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(container -> {
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "developers-guild-emoji-pack"), container, Text.literal("Developer's Guild Emoji Pack"), ResourcePackActivationType.NORMAL);
+            ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID, "twemoji-emoji-pack"), container, Text.literal("Twemoji Emoji Pack"), ResourcePackActivationType.DEFAULT_ENABLED);
         });
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
