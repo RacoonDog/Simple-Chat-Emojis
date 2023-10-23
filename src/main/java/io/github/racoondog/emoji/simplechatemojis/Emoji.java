@@ -1,40 +1,47 @@
 package io.github.racoondog.emoji.simplechatemojis;
 
+import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.MissingSprite;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
+import org.lwjgl.stb.STBImage;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class Emoji {
     private static final Emoji MISSING = new Emoji(
             MissingSprite.getMissingSpriteId(),
+            MissingSprite.getMissingSpriteId().getPath(),
             MissingSprite.getMissingSpriteTexture().getImage().getHeight(),
             MissingSprite.getMissingSpriteTexture().getImage().getWidth()
     );
 
     public final Identifier id;
-    private final int texHeight;
+    public final String name;
     private final int texWidth;
+    private final int texHeight;
 
-    private Emoji(Identifier identifier, int texHeight, int texWidth) {
+    private Emoji(Identifier identifier, String name, int texWidth, int texHeight) {
         this.id = identifier;
+        this.name = name;
         this.texHeight = texHeight;
         this.texWidth = texWidth;
     }
 
     public static Emoji fromResource(Identifier identifier, Resource texture) {
-        try (var inputStream = texture.getInputStream();
-             var nativeImage = NativeImage.read(inputStream)) {
-            return new Emoji(identifier, nativeImage.getHeight(), nativeImage.getWidth());
+        try (var inputStream = texture.getInputStream()) {
+            ByteBuffer buffer = TextureUtil.readResource(inputStream).rewind();
+            int[] x = new int[1];
+            int[] y = new int[1];
+            STBImage.stbi_info_from_memory(buffer, x, y, new int[1]);
+            return new Emoji(identifier, identifier.getPath(), x[0], y[0]);
         } catch (IOException e) {
             e.printStackTrace();
+            return MISSING;
         }
-
-        return MISSING;
     }
 
     public void render(DrawContext context, int x, int y, int fontHeight, int color) {
