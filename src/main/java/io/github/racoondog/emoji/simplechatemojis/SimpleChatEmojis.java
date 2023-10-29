@@ -14,7 +14,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Environment(EnvType.CLIENT)
@@ -40,10 +41,8 @@ public class SimpleChatEmojis implements ClientModInitializer {
             @Override
             public void reload(ResourceManager manager) {
                 REGISTRY.clear();
-
                 for (var resourcePair : manager.findResources("textures/simple-chat-emojis", path -> path.getPath().endsWith(".png")).entrySet()) {
                     String emojiName = Utils.nameFromIdentifier(resourcePair.getKey());
-
                     register(emojiName, Emoji.fromResource(resourcePair.getKey(), resourcePair.getValue()));
                 }
             }
